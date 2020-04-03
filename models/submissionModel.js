@@ -3,15 +3,17 @@ const mongoose = require('mongoose');
 const submissionSchema = new mongoose.Schema({
   sourceCode: {
     type: String,
-    required: [true, "You can't submit without a source code"],
+    required: [true, 'You can not submit without a source code'],
   },
   problem: {
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'Problem',
+    required: [true, 'A submission must belong to a problem'],
   },
   submittedBy: {
     type: mongoose.SchemaTypes.ObjectId,
     ref: 'User',
+    required: [true, 'A submission must have an author'],
   },
   language: {
     type: String,
@@ -20,6 +22,10 @@ const submissionSchema = new mongoose.Schema({
   submittedOn: {
     type: Date,
     default: Date.now,
+  },
+  isJudged: {
+    type: Boolean,
+    default: false,
   },
   time: {
     type: Number,
