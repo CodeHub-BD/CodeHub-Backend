@@ -46,7 +46,8 @@ const userSchema = new mongoose.Schema({
   ],
   submissions: [
     {
-      type: String,
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: 'Submission',
     },
   ],
   userStat: {
@@ -86,6 +87,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const userModel = mongoose.model('users', userSchema);
+const userModel = mongoose.model('User', userSchema);
 
 module.exports = userModel;
