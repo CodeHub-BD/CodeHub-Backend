@@ -7,6 +7,7 @@ const app = express();
 
 // Third party middlewares
 app.use(morgan('dev'));
+app.use(express.json());
 
 // Setting up routes
 app.get('/', (req, res, next) => {
