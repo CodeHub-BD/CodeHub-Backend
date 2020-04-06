@@ -35,6 +35,19 @@ class Compiler {
     return pythonCompiler;
   }
 
+  generateCommand() {
+    switch (this.language) {
+      case 'cpp':
+        return this.generateCppCommand();
+      case 'python':
+        return this.generatePythonCommand();
+
+      default:
+        console.error("Couldn't understand the language!");
+        return 'Error';
+    }
+  }
+
   compileCode(compileCommand) {
     exec(compileCommand, (err, stdout, stderr) => {
       if (stderr) {
@@ -46,19 +59,7 @@ class Compiler {
   }
 
   compile() {
-    let compileCommand = '';
-    switch (this.language) {
-      case 'cpp':
-        compileCommand = this.generateCppCommand();
-        break;
-      case 'python':
-        compileCommand = this.generatePythonCommand();
-        break;
-
-      default:
-        console.error("Couldn't understand the language!");
-        break;
-    }
+    let compileCommand = this.generateCommand();
     this.compileCode(compileCommand);
   }
 }
