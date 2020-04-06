@@ -17,7 +17,8 @@ const submissionSchema = new mongoose.Schema({
   },
   language: {
     type: String,
-    enum: ['c++', 'c', 'java', 'python'],
+    enum: ['c++', 'python'],
+    required: [true, 'A submission must belong one language!'],
   },
   submittedOn: {
     type: Date,
