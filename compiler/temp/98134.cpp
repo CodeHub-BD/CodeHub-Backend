@@ -1,1 +1,0 @@
-#include<bits/stdc++.h> using namespace std; int main() {string S = "youfoaefi";cout << S;return 0;}
