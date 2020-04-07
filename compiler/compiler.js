@@ -1,6 +1,16 @@
 const fs = require('fs');
 const { exec } = require('child_process');
 
+const extensions = {
+  cpp: 'cpp',
+  'c++': 'cpp',
+  'c plus plus': 'cpp',
+  python: 'py',
+  py: 'py',
+  python3: 'py',
+  python2: 'py',
+};
+
 class Compiler {
   /**
    *
@@ -10,29 +20,21 @@ class Compiler {
   constructor(sourceCode, language) {
     this.sourceCode = sourceCode;
     this.language = language;
-    this.path = (Math.random() * 100000).toFixed().toString();
-  }
+    this.path = `${__dirname}/temp/`;
+    this.fileName = (Math.random() * 100000).toFixed().toString();
+    this.fileNameWithExt = this.fileName + '.' + extensions[this.language];
 
-  saveToFile(extension) {
-    if (!fs.existsSync(`${__dirname}/temp`)) {
-      fs.mkdirSync(`${__dirname}/temp`);
-    }
-
-    this.pathWithExt = this.path + '.' + extension;
-    this.exactPath = `${__dirname}/temp/${this.pathWithExt}`;
-    fs.writeFileSync(this.exactPath, this.sourceCode);
+    this.generateCommand();
   }
 
   generateCppCommand() {
-    this.saveToFile('cpp');
-    const cppCompiler = `cd ${__dirname}/temp && g++ ${this.pathWithExt} -o ${this.path} && ./${this.path} && rm ${this.path}*`;
-    return cppCompiler;
+    this.compilingCommand = `cd ${this.path} && g++ ${this.fileNameWithExt} -o ${this.fileName} && ./${this.fileName}`;
+    this.cleaningCommand = `cd ${this.path} && rm ${this.fileName}*`;
   }
 
   generatePythonCommand() {
-    this.saveToFile('py');
-    const pythonCompiler = `cd ${__dirname}/temp && python ${this.pathWithExt} && rm ${this.pathWithExt}`;
-    return pythonCompiler;
+    this.compilingCommand = `cd ${this.path} && python ${this.fileNameWithExt}`;
+    this.cleaningCommand = `cd ${this.path} && rm ${this.fileNameWithExt}`;
   }
 
   generateCommand() {
@@ -48,19 +50,77 @@ class Compiler {
     }
   }
 
-  compileCode(compileCommand) {
-    exec(compileCommand, (err, stdout, stderr) => {
-      if (stderr) {
-        console.error(stderr);
-      } else if (stdout) {
-        console.log(stdout);
-      } else if (err) throw err;
+  createTempFolder() {
+    return new Promise((resolve, reject) => {
+      fs.exists(this.path, (exist) => {
+        if (!exist) {
+          fs.mkdir(this.path, (err) => {
+            if (err) {
+              console.error('Error creating temp folder!');
+              reject(err);
+            }
+            resolve('Successfully created the temp folder!');
+          });
+        } else resolve('Folder already exists!');
+      });
     });
   }
 
-  compile() {
-    let compileCommand = this.generateCommand();
-    this.compileCode(compileCommand);
+  saveCodeToFile() {
+    return new Promise((resolve, reject) => {
+      fs.writeFile(this.path + this.fileNameWithExt, this.sourceCode, (err) => {
+        if (err) {
+          console.error('Error writing the code to the file');
+          reject(err);
+        }
+        resolve('Written the code to the file!');
+      });
+    });
+  }
+
+  compileCode() {
+    return new Promise((resolve, reject) => {
+      exec(this.compilingCommand, (err, stdout, stderr) => {
+        if (err) {
+          console.error('Error compiling the code');
+          reject(err);
+        }
+        if (stderr) {
+          console.warn('Error came from compilation!');
+          reject(stderr);
+        }
+        if (stdout) {
+          console.log({ stdout, message: 'Succesfully compiled!' });
+
+          resolve(stdout, 'Succesfully compiled!');
+        }
+      });
+    });
+  }
+
+  cleanCode() {
+    return new Promise((resolve, reject) => {
+      exec(this.cleaningCommand, (err, stdout, stderr) => {
+        if (err) {
+          console.error('Error cleaning the code!');
+          reject(err);
+        }
+        resolve('Succesfully cleaned!');
+      });
+    });
+  }
+
+  async compile() {
+    try {
+      await this.createTempFolder();
+      await this.saveCodeToFile();
+      const output = await this.compileCode();
+      await this.cleanCode();
+      return output;
+    } catch (err) {
+      await this.cleanCode();
+      throw err;
+    }
   }
 }
 
