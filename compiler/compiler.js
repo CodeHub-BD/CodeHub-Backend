@@ -110,7 +110,7 @@ class Compiler {
     });
   }
 
-  async compile() {
+  async compile(next) {
     try {
       await this.createTempFolder();
       await this.saveCodeToFile();
@@ -119,7 +119,7 @@ class Compiler {
       return output;
     } catch (err) {
       await this.cleanCode();
-      throw new AppError(err, 500);
+      return next(new AppError(err, 500));
     }
   }
 }
