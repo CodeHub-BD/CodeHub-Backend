@@ -82,14 +82,12 @@ class Compiler {
   compileCode() {
     return new Promise((resolve, reject) => {
       exec(this.compilingCommand, (err, stdout, stderr) => {
-        if (err) {
-          console.error('Error compiling the code');
-          reject(err);
-        }
         if (stderr) {
           console.warn('Error came from compilation!');
-          //1 console.warn(stderr);
           reject(stderr);
+        } else if (err) {
+          console.error('Error compiling the code');
+          reject(err);
         }
         if (stdout) {
           console.log({ stdout, message: 'Succesfully compiled!' });
@@ -121,7 +119,6 @@ class Compiler {
       return output;
     } catch (err) {
       await this.cleanCode();
-      //2 console.warn(err);
       throw new AppError(err, 500);
     }
   }
