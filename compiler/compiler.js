@@ -1,4 +1,5 @@
 const fs = require('fs');
+const AppError = require('../utils/appError');
 const { exec } = require('child_process');
 
 const extensions = {
@@ -87,6 +88,7 @@ class Compiler {
         }
         if (stderr) {
           console.warn('Error came from compilation!');
+          //1 console.warn(stderr);
           reject(stderr);
         }
         if (stdout) {
@@ -119,7 +121,8 @@ class Compiler {
       return output;
     } catch (err) {
       await this.cleanCode();
-      throw err;
+      //2 console.warn(err);
+      throw new AppError(err, 500);
     }
   }
 }
