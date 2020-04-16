@@ -1,7 +1,9 @@
 const Compiler = require('./../compiler/compiler');
+const catchAsync = require('./../utils/catchAsync');
 
-exports.compile = async (req, res, next) => {
+exports.compile = catchAsync(async (req, res, next) => {
   const { sourceCode, language } = req.body;
   const compiler = new Compiler(sourceCode, language);
-  await compiler.compile(next, res);
-};
+  const output = await compiler.compile();
+  res.status(200).json({ message: 'Compiled', output: output });
+});

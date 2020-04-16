@@ -84,10 +84,15 @@ class Compiler {
       exec(this.compilingCommand, (err, stdout, stderr) => {
         if (stderr) {
           console.warn('Error came from compilation!');
-          reject(stderr);
+          reject(new Error(stderr));
         } else if (err) {
           console.error('Error compiling the code');
-          console.error(err);
+          if (err.message.includes('timeout')) {
+            err.message = 'Time Limit Exceeded';
+          }
+          if (err.message.includes('length exceeded')) {
+            err.message = 'Output Length Exceeded';
+          }
           reject(err);
         } else {
           console.log({ stdout, message: 'Succesfully compiled!' });
@@ -109,16 +114,16 @@ class Compiler {
     });
   }
 
-  async compile(next, res) {
+  async compile() {
     try {
       await this.createTempFolder();
       await this.saveCodeToFile();
       const output = await this.compileCode();
       await this.cleanCode();
-      res.status(200).json({ message: 'Compiled', output: output });
+      return output;
     } catch (err) {
       await this.cleanCode();
-      return next(new AppError(err, 500));
+      throw err;
     }
   }
 }
