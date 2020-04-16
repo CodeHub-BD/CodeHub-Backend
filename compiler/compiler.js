@@ -88,10 +88,8 @@ class Compiler {
         } else if (err) {
           console.error('Error compiling the code');
           reject(err);
-        }
-        if (stdout) {
+        } else {
           console.log({ stdout, message: 'Succesfully compiled!' });
-
           resolve(stdout, 'Succesfully compiled!');
         }
       });
@@ -110,16 +108,16 @@ class Compiler {
     });
   }
 
-  async compile() {
+  async compile(next, res) {
     try {
       await this.createTempFolder();
       await this.saveCodeToFile();
       const output = await this.compileCode();
       await this.cleanCode();
-      return output;
+      res.status(200).json({ message: 'Compiled', output: output });
     } catch (err) {
       await this.cleanCode();
-      throw new AppError(err, 500);
+      return next(new AppError(err, 500));
     }
   }
 }
