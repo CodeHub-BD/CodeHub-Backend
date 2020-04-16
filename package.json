@@ -4,8 +4,11 @@
   "description": "A modern online judge with forum and blog",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --watch --runInBand",
     "start": "nodemon server.js"
+  },
+  "jest": {
+    "testEnvironment": "node"
   },
   "repository": {
     "type": "git",
@@ -23,15 +26,17 @@
   },
   "homepage": "https://github.com/CodeHub-BD/CodeHub-Backend#readme",
   "dependencies": {
-    "dotenv": "^8.2.0",
     "bcryptjs": "^2.4.3",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.7",
     "morgan": "^1.10.0",
+    "supertest": "^4.0.2",
     "validator": "^13.0.0"
   },
   "devDependencies": {
+    "jest": "^25.3.0",
     "nodemon": "^2.0.2",
     "prettier": "^2.0.2"
   }

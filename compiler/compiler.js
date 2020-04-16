@@ -29,7 +29,7 @@ class Compiler {
   }
 
   generateCppCommand() {
-    this.compilingCommand = `cd ${this.path} && g++ ${this.fileNameWithExt} -o ${this.fileName} && timeout 3s ./${this.fileName}`;
+    this.compilingCommand = `cd ${this.path} && g++ ${this.fileNameWithExt} -o ${this.fileName} && timeout 1s ./${this.fileName}`;
     this.cleaningCommand = `cd ${this.path} && rm ${this.fileName}*`;
   }
 
@@ -84,7 +84,7 @@ class Compiler {
       exec(this.compilingCommand, (err, stdout, stderr) => {
         if (stderr) {
           console.warn('Error came from compilation!');
-          reject(new Error(stderr));
+          reject(new Error('Compilation Error : ' + stderr));
         } else if (err) {
           console.error('Error compiling the code');
           if (err.message.includes('timeout')) {
