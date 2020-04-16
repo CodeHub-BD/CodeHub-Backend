@@ -29,7 +29,7 @@ class Compiler {
   }
 
   generateCppCommand() {
-    this.compilingCommand = `cd ${this.path} && g++ ${this.fileNameWithExt} -o ${this.fileName} && ./${this.fileName}`;
+    this.compilingCommand = `cd ${this.path} && g++ ${this.fileNameWithExt} -o ${this.fileName} && timeout 3s ./${this.fileName}`;
     this.cleaningCommand = `cd ${this.path} && rm ${this.fileName}*`;
   }
 
@@ -87,6 +87,7 @@ class Compiler {
           reject(stderr);
         } else if (err) {
           console.error('Error compiling the code');
+          console.error(err);
           reject(err);
         } else {
           console.log({ stdout, message: 'Succesfully compiled!' });
