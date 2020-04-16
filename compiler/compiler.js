@@ -90,7 +90,6 @@ class Compiler {
           reject(err);
         } else {
           console.log({ stdout, message: 'Succesfully compiled!' });
-          stdout = stdout || '';
           resolve(stdout, 'Succesfully compiled!');
         }
       });
