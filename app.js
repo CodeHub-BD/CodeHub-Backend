@@ -17,7 +17,7 @@ app.use('/v1/users', userRouter);
 app.use('/v1/submission', submissionRouter);
 
 app.get('/v1', (req, res) => {
-  res.send('CodeHub Homepage');
+  res.json({ des: 'CodeHub Homepage' });
   //next();
 });
 
