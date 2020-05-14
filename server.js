@@ -7,11 +7,11 @@ const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || 'localhost';
 
 //connect to DATABASE
-const DB = process.env.DATABASE.replace(
-  '<PASSWORD>',
-  process.env.DATABASE_PASSWORD
-);
-//const DB = process.env.DATABASE_LOCAL;
+// const DB = process.env.DATABASE.replace(
+//   '<PASSWORD>',
+//   process.env.DATABASE_PASSWORD
+// );
+const DB = process.env.DATABASE_LOCAL;
 
 mongoose
   .connect(DB, {
