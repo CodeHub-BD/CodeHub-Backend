@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
+const autoincrement = require('simple-mongoose-autoincrement');
+
 
 const problemSchema = new mongoose.Schema({
+  id: { type: Number, required: true },
   name: {
     type: String,
     required: [true, 'A problem must have a name!'],
@@ -70,5 +73,9 @@ const problemSchema = new mongoose.Schema({
   },
 });
 
+problemSchema.plugin(autoincrement, { field: 'id' });
 const problemModel = mongoose.model('Problem', problemSchema);
 module.exports = problemModel;
+
+
+

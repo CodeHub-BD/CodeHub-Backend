@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const userRouter = require('./routes/userRoutes');
+const problemRouter = require('./routes/problemRoutes');
 const submissionRouter = require('./routes/submissionRoutes');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -15,6 +16,7 @@ app.use(express.json());
 // Setting up routes
 app.use('/v1/users', userRouter);
 app.use('/v1/submission', submissionRouter);
+app.use('/v1/problem', problemRouter);
 
 app.get('/v1', (req, res) => {
   res.json({ des: 'CodeHub Homepage' });
