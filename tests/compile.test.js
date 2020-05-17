@@ -1,5 +1,59 @@
 const request = require('supertest');
 const app = require('./../testserver');
+const User = require('./../models/userModel');
+const Submission = require('./../models/submissionModel');
+const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
+
+const signToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+};
+
+const testUser = {
+  _id: new mongoose.Types.ObjectId(),
+  name: 'testuser',
+  email: 'testuser@gmail.com',
+  password: 'testuser',
+  role: 'admin',
+};
+
+let token = "";
+beforeEach(async () => {
+  await User.deleteMany();
+  await Submission.deleteMany();
+  const response = await new User(testUser).save();
+  token = signToken(testUser._id);
+  // console.log(token);
+
+})
+
+test('Should SignUp an User and Response 201', async () => {
+  const newUser = {
+    name: 'test',
+    email: 'test@gmail.com',
+    password: 'test',
+    role: 'admin',
+  };
+
+  const response = await request(app)
+    .post('/v1/users/signup')
+    .send(newUser)
+    .expect(201);
+
+});
+
+test('Should LogIn an User and Response 200', async () => {
+
+  const response = await request(app)
+    .post('/v1/users/login')
+    .send({
+      email: testUser.email,
+      password: testUser.password,
+    })
+    .expect(200);
+});
 
 test('Should response back 200 code', async () => {
   const code = {
@@ -9,6 +63,7 @@ test('Should response back 200 code', async () => {
   };
   const response = await request(app)
     .post('/v1/submission')
+    .set('Authorization', `Bearer ${token}`)
     .send(code)
     .expect(200);
 });
@@ -21,6 +76,7 @@ test('Should response back 200 code and hello\n', async () => {
   };
   const response = await request(app)
     .post('/v1/submission')
+    .set('Authorization', `Bearer ${token}`)
     .send(code)
     .expect(200);
   expect(response.body.output).toBe('hello\n');
@@ -34,6 +90,7 @@ test('Should response back 500 and TLE', async () => {
   };
   const response = await request(app)
     .post('/v1/submission')
+    .set('Authorization', `Bearer ${token}`)
     .send(code)
     .expect(500);
   expect(response.body.message).toBe('Time Limit Exceeded');
@@ -47,6 +104,7 @@ test('Should response back 500 with Compilation Error', async () => {
   };
   const response = await request(app)
     .post('/v1/submission')
+    .set('Authorization', `Bearer ${token}`)
     .send(code)
     .expect(500);
   const val = response.body.message.includes('Compilation Error');
@@ -61,6 +119,7 @@ test('Should response back 500 with Output Length Exceeded', async () => {
   };
   const response = await request(app)
     .post('/v1/submission')
+    .set('Authorization', `Bearer ${token}`)
     .send(code)
     .expect(500);
   expect(response.body.message).toBe('Output Length Exceeded');
