@@ -2,6 +2,7 @@ const fs = require('fs');
 const AppError = require('../utils/appError');
 const { exec } = require('child_process');
 
+
 const extensions = {
   cpp: 'cpp',
   'c++': 'cpp',
@@ -118,9 +119,16 @@ class Compiler {
     try {
       await this.createTempFolder();
       await this.saveCodeToFile();
+      const timebefore = Date.now();
       const output = await this.compileCode();
+      const timeafter = Date.now();
+      const time = timeafter - timebefore;
+
       await this.cleanCode();
-      return output;
+      return ({
+        output,
+        time
+      });
     } catch (err) {
       await this.cleanCode();
       throw err;

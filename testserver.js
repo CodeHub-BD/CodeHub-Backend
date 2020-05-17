@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const app = require('./app');
 const mongoose = require('mongoose');
 
@@ -7,11 +8,11 @@ const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || 'localhost';
 
 //connect to DATABASE
-const DB = process.env.DATABASE.replace(
-  '<PASSWORD>',
-  process.env.DATABASE_PASSWORD
-);
-//const DB = process.env.DATABASE_LOCAL;
+// const DB = process.env.DATABASE.replace(
+//   '<PASSWORD>',
+//   process.env.DATABASE_PASSWORD
+// );
+const DB = process.env.DATABASE_LOCAL_TEST;
 
 mongoose
   .connect(DB, {
