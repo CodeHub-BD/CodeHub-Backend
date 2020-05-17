@@ -29,31 +29,7 @@ beforeEach(async () => {
 
 })
 
-test('Should SignUp an User and Response 201', async () => {
-  const newUser = {
-    name: 'test',
-    email: 'test@gmail.com',
-    password: 'test',
-    role: 'admin',
-  };
 
-  const response = await request(app)
-    .post('/v1/users/signup')
-    .send(newUser)
-    .expect(201);
-
-});
-
-test('Should LogIn an User and Response 200', async () => {
-
-  const response = await request(app)
-    .post('/v1/users/login')
-    .send({
-      email: testUser.email,
-      password: testUser.password,
-    })
-    .expect(200);
-});
 
 test('Should response back 200 code', async () => {
   const code = {
