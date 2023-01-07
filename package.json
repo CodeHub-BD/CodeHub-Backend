@@ -34,7 +34,7 @@
     "morgan": "^1.10.0",
     "simple-mongoose-autoincrement": "^1.2.1",
     "supertest": "^4.0.2",
-    "validator": "^13.0.0"
+    "validator": "^13.7.0"
   },
   "devDependencies": {
     "jest": "^25.3.0",
